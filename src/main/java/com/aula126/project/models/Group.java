@@ -4,13 +4,15 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "groups")
@@ -21,19 +23,19 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", length = 255)
     private String name;
 
-    @OneToMany(targetEntity = Contact.class , fetch = FetchType.LAZY)
-    @JoinColumn(name="g_id")
-    private List<Contact> contacts;
+    @ManyToOne
+    @JoinColumn(name = "u_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
     public Group() {
     }
 
     public Group(String name, List<Contact> contacts) {
         this.name = name;
-        this.contacts = contacts;
     }
 
     public Long getId() {
@@ -52,12 +54,13 @@ public class Group {
         this.name = name;
     }
 
-    public List<Contact> getContacts() {
-        return contacts;
+    public User getUser() {
+        return user;
     }
 
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
+    public void setUser(User user) {
+        this.user = user;
     }
 
+    
 }

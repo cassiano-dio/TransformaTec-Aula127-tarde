@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aula126.project.models.Contact;
+import com.aula126.project.models.Group;
 import com.aula126.project.models.User;
 import com.aula126.project.repositories.ContactRepository;
+import com.aula126.project.repositories.GroupRepository;
 import com.aula126.project.repositories.PhoneRepository;
 import com.aula126.project.repositories.UserRepository;
 
@@ -36,6 +39,9 @@ public class ContactController{
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    GroupRepository groupRepository;
+
     @PostMapping("/users/{id}/contacts")
     //localhost:8080/api/users/1/contacts
 
@@ -44,19 +50,25 @@ public class ContactController{
         @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @ApiOperation(value = "Criando um novo contato", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Contact> createContact(
+    public ResponseEntity<?> createContact(
         @PathVariable("id") long id,
+        @RequestParam long gId,
         @RequestBody Contact contact
     ){
         User _user = userRepository.findById(id);
 
+        Group _group = groupRepository.getById(gId);
+
         //Atrelando um usuário a um contato
         contact.setUser(_user);
+
+        //Atrelando um contato a um grupo
+        contact.setGroup(_group);
 
         //Salvando um novo contato
         Contact _contact = contactRepository.save(contact);
 
-        return new ResponseEntity<Contact>(_contact, HttpStatus.CREATED);
+        return new ResponseEntity<>(_contact, HttpStatus.CREATED);
     }
 
     @GetMapping("/users/{id}/contacts")

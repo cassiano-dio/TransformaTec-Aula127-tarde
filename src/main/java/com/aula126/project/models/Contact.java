@@ -33,6 +33,10 @@ public class Contact {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "g_id", nullable = false)
+    private Group group;
+
     public Contact() {
     }
 
@@ -65,5 +69,15 @@ public class Contact {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    
 
 }
